@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Html5 on Anders Pitman&#39;s blog</title>
+    <link>http://anderspitman.com/categories/html5/index.xml</link>
+    <description>Recent content in Html5 on Anders Pitman&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Powered by [Hugo](http://gohugo.io).</copyright>
+    <atom:link href="http://anderspitman.com/categories/html5/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Chrome Extension PubSub</title>
+      <link>http://anderspitman.com/2014/08/30/chrome-extension-pubsub/</link>
+      <pubDate>Sat, 30 Aug 2014 22:35:24 +0000</pubDate>
+      
+      <guid>http://anderspitman.com/2014/08/30/chrome-extension-pubsub/</guid>
+      <description>
+
+&lt;p&gt;This tutorial builds the same Chrome extension popup as my
+&lt;a href=&#34;http://anderspitman.com/blog/2014/08/04/chrome-extension-content-script-stylesheet-isolation/&#34;&gt;Chrome Extension Content Script Stylesheet Isolation&lt;/a&gt;
+tutorial, but uses the &lt;a href=&#34;https://github.com/anderspitman/chromeps&#34;&gt;chromeps&lt;/a&gt; pubsub module to make things easier.
+For more detailed information, I highly recommend looking through that tutorial.&lt;/p&gt;
+
+&lt;p&gt;You can get all the code for this tutorial from &lt;a href=&#34;https://github.com/anderspitman/chrome-extension-pubsub-example&#34;&gt;https://github.com/anderspitman/chrome-extension-pubsub-example&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;background-info&#34;&gt;Background Info&lt;/h2&gt;
+
+&lt;p&gt;When writing chrome extensions with content scripts, you often find yourself doing a lot of message passing.
+If your content scripts include iframes, things get even more complicated because in order to communicate
+between the content scripts and their iframes, you have to ferry the messages back and forth using the background
+page. This can get messy very quickly. This tutorial serves as a simple but complete example of how to use
+chromeps to help with these issues.&lt;/p&gt;
+
+&lt;h2 id=&#34;objective&#34;&gt;Objective&lt;/h2&gt;
+
+&lt;p&gt;To recap from the previous tutorial: we&amp;rsquo;ll be creating a simple chrome extension that uses a content scripts with
+a popup that loads on every page the user opens. When the user clicks outside the popup it disappears. This
+demonstrates the different types of message passing mentioned above.&lt;/p&gt;
+
+&lt;h2 id=&#34;install-chromeps&#34;&gt;Install chromeps&lt;/h2&gt;
+
+&lt;p&gt;Create a new empty directory for you extension and download &lt;code&gt;chromeps.js&lt;/code&gt; into it. You can get it from
+&lt;a href=&#34;https://github.com/anderspitman/chromeps&#34;&gt;https://github.com/anderspitman/chromeps&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;create-a-new-chrome-extension&#34;&gt;Create a new Chrome Extension&lt;/h2&gt;
+
+&lt;p&gt;Add the following manifest.json:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-json&#34;&gt;{
+  &amp;quot;manifest_version&amp;quot;: 2,
+  &amp;quot;name&amp;quot;: &amp;quot;Chrome Extension PubSub&amp;quot;,
+  &amp;quot;description&amp;quot;: &amp;quot;This extension demonstrates Content Script CSS Isolation with chromeps&amp;quot;,
+  &amp;quot;version&amp;quot;: &amp;quot;1.0&amp;quot;,
+  &amp;quot;background&amp;quot; : {
+    &amp;quot;scripts&amp;quot; : [&amp;quot;chromeps.js&amp;quot;]
+  },
+  &amp;quot;content_scripts&amp;quot; : [
+    {
+      &amp;quot;matches&amp;quot; : [&amp;quot;&amp;lt;all_urls&amp;gt;&amp;quot;, &amp;quot;http://*/*&amp;quot;, &amp;quot;https://*/*&amp;quot;],
+      &amp;quot;css&amp;quot; : [&amp;quot;content.css&amp;quot;],
+      &amp;quot;js&amp;quot; : [&amp;quot;chromeps.js&amp;quot;, &amp;quot;content.js&amp;quot;]
+    }
+  ],
+  &amp;quot;web_accessible_resources&amp;quot; : [&amp;quot;popup.html&amp;quot;]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Notice that we are loading &lt;code&gt;chromeps.js&lt;/code&gt; into the background page (for this example we actually don&amp;rsquo;t have any
+other logic for the background page), and also loading it each time a content script is loaded, which in this
+case means any time the user opens a web page.&lt;/p&gt;
+
+&lt;h2 id=&#34;add-content-script-and-style&#34;&gt;Add Content Script and Style&lt;/h2&gt;
+
+&lt;p&gt;The manifest references several files that we will need to create. Let&amp;rsquo;s start
+with content.js:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var iframe = document.createElement(&#39;iframe&#39;);
+iframe.src = chrome.extension.getURL(&amp;quot;popup.html&amp;quot;);
+iframe.className = &#39;css-isolation-popup&#39;;
+iframe.frameBorder = 0;
+document.body.appendChild(iframe);
+
+chromeps.subscribe(&#39;commands&#39;, function(message) {
+  if (message == &#39;hide_popup&#39;) {
+    iframe.style.display = &#39;none&#39;;
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here we&amp;rsquo;re creating the iframe that will hold our popup. Try to make sure the
+&lt;code&gt;className&lt;/code&gt; is something unique because this is the one style that may
+still interfere with the page the user visits. I&amp;rsquo;m using &lt;code&gt;css-isolation-popup&lt;/code&gt;.
+That style comes from content.css, which is referenced in the manifest. Let&amp;rsquo;s
+add it real quick:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;.css-isolation-popup {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I&amp;rsquo;m basically just giving the popup free reign over the entire window. It&amp;rsquo;s fine in
+my case because I have a shaded overlay that surrounds the actual popup. You might need
+to tweak this for your needs.&lt;/p&gt;
+
+&lt;p&gt;Note that we&amp;rsquo;ve used chromeps to subscribe to the &amp;ldquo;commands&amp;rdquo; topic, so our callback will be invoked
+any time a message on that topic is published anywhere in chrome.&lt;/p&gt;
+
+&lt;h2 id=&#34;add-popup&#34;&gt;Add Popup&lt;/h2&gt;
+
+&lt;p&gt;Now let&amp;rsquo;s add the actual popup files, popup.html and popup.js:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-html&#34;&gt;&amp;lt;!doctype html&amp;gt;
+&amp;lt;html&amp;gt;
+
+&amp;lt;head&amp;gt;
+&amp;lt;style&amp;gt;
+.overlay {
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  z-index: 1000;
+  opacity: .80;
+}
+.wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 200px;
+  margin-left: -200px;
+  margin-top: -100px;
+  text-align: center;
+  background-color:#FFFFFF;
+  z-index: 1100;
+}
+&amp;lt;/style&amp;gt;
+&amp;lt;/head&amp;gt;
+
+&amp;lt;body&amp;gt;
+&amp;lt;div class=&#39;overlay&#39;&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&#39;wrapper&#39;&amp;gt;
+  &amp;lt;h1&amp;gt;Click outside to hide&amp;lt;/h1&amp;gt;
+&amp;lt;/div&amp;gt;
+&amp;lt;script src=&#39;chromeps.js&#39;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;script src=&#39;popup.js&#39;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;/body&amp;gt;
+
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Mostly just styling. The overlay is a shaded region which will fill the window
+surrounding our small popup. The popup lives inside the wrapper.&lt;/p&gt;
+
+&lt;p&gt;We&amp;rsquo;re sourcing &lt;code&gt;popup.js&lt;/code&gt; from within &lt;code&gt;popup.html&lt;/code&gt;. There&amp;rsquo;s no need to
+add it in the manifest. We&amp;rsquo;re also including &lt;code&gt;chromeps.js&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;var overlay = document.querySelector(&#39;.overlay&#39;);
+overlay.addEventListener(&#39;click&#39;, function() {
+  chromeps.publish(&#39;commands&#39;, &#39;hide_popup&#39;);
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here we&amp;rsquo;re handling when the user clicks outside the popup, in the overlay
+region. When this happens we want to publish a signal to the content script to hide
+our iframe.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;And that&amp;rsquo;s it. If you compare this to the previous tutorial, you&amp;rsquo;ll notice that we don&amp;rsquo;t need to explicitly
+create a background page just for passing messages, since chromeps takes care of all the heavy lifting for us.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Chrome Extension Content Script Stylesheet Isolation</title>
+      <link>http://anderspitman.com/2014/08/04/chrome-extension-content-script-stylesheet-isolation/</link>
+      <pubDate>Mon, 04 Aug 2014 08:52:47 +0000</pubDate>
+      
+      <guid>http://anderspitman.com/2014/08/04/chrome-extension-content-script-stylesheet-isolation/</guid>
+      <description>
+
+&lt;p&gt;&lt;strong&gt;UPDATE 2014-08-30&lt;/strong&gt;: For a way to handle message passing using the
+&lt;a href=&#34;https://github.com/anderspitman/chromeps&#34;&gt;chromeps&lt;/a&gt; pubsub module, see
+&lt;a href=&#34;http://anderspitman.com/blog/2014/08/30/chrome-extension-pubsub/&#34;&gt;this post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;background-info&#34;&gt;Background Info&lt;/h2&gt;
+
+&lt;p&gt;When writing Chrome extensions, if you want to inject HTML and CSS into pages the user is
+visiting, you use what&amp;rsquo;s called a
+&lt;a href=&#34;https://developer.chrome.com/extensions/content_scripts&#34;&gt;content script&lt;/a&gt;.
+One reason you might want to do this would be to build a custom popup
+that activates on certain pages.&lt;/p&gt;
+
+&lt;p&gt;One of the biggest problems people run in to is CSS corruption. The way that content
+scripts work means that the CSS from your content script is merged with the CSS
+from the page the user is visiting. This means that the page can corrupt what
+your popup looks like, and the popup might mess up the page.
+&lt;a href=&#34;http://stackoverflow.com/q/12783217/943814&#34;&gt;See here&lt;/a&gt;.
+The ideal
+situation is for your content script to run in a completely isolated environment.
+Unfortunately this isn&amp;rsquo;t straightfoward. There are
+&lt;a href=&#34;http://stackoverflow.com/a/20241247/943814&#34;&gt;a couple different options&lt;/a&gt;. The choice came down to IFrames vs Shadow DOM. I decided to try
+Shadow DOM first.&lt;/p&gt;
+
+&lt;p&gt;The Shadow DOM is (as of this writing) a new technology that is part of the upcoming
+&lt;a href=&#34;http://webcomponents.org/&#34;&gt;Web Components&lt;/a&gt;. It&amp;rsquo;s very cool stuff.
+When first trying to implement my popup I tried using the Shadow DOM, but I ran into
+problems when
+&lt;a href=&#34;http://stackoverflow.com/q/25048359/943814&#34;&gt;trying to run JavaScript&lt;/a&gt;
+in my popup. This
+&lt;a href=&#34;http://stackoverflow.com/a/25053376/943814&#34;&gt;led me to Custom Elements&lt;/a&gt;,
+another web components feature. Since both shadow DOM and custom elements are very new
+and not universally supported, at this point I decided to try
+&lt;a href=&#34;http://www.polymer-project.org/&#34;&gt;Polymer&lt;/a&gt;.
+Polymer is a project that provides nice wrappers around web components features, as well
+as
+&lt;a href=&#34;http://remysharp.com/2010/10/08/what-is-a-polyfill/&#34;&gt;polyfills&lt;/a&gt; for features that aren&amp;rsquo;t
+implemented natively yet. Polymer turned out to be awesome, and did exactly what
+I need, but unfortunately there is
+&lt;a href=&#34;https://code.google.com/p/chromium/issues/detail?id=390807&#34;&gt;a bug&lt;/a&gt;
+in the current version of chrome that
+prevents custom elements from working in content scripts. Back to square one.&lt;/p&gt;
+
+&lt;p&gt;Alright, that leaves us with the infamous iframe. This is the solution that
+worked for me. In the end it was pretty strightforward. There are a couple
+caveats, but nothing too bad. I&amp;rsquo;ll run through the basics of how I implemented
+it.&lt;/p&gt;
+
+&lt;p&gt;All of the code used in this example is available from the following github repo:
+&lt;a href=&#34;https://github.com/anderspitman/chrome-extension-css-isolation-example&#34;&gt;https://github.com/anderspitman/chrome-extension-css-isolation-example&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;create-a-new-chrome-extension&#34;&gt;Create a new Chrome Extension&lt;/h2&gt;
+
+&lt;p&gt;Create an empty directory and add the following manifest.json:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-json&#34;&gt;{
+  &amp;quot;manifest_version&amp;quot;: 2,
+  &amp;quot;name&amp;quot;: &amp;quot;CSS Isolation&amp;quot;,
+  &amp;quot;description&amp;quot;: &amp;quot;This extension demonstrates Content Script CSS Isolation&amp;quot;,
+  &amp;quot;version&amp;quot;: &amp;quot;1.0&amp;quot;,
+  &amp;quot;background&amp;quot; : {
+    &amp;quot;scripts&amp;quot; : [&amp;quot;background.js&amp;quot;]
+  },
+  &amp;quot;content_scripts&amp;quot; : [
+    {
+      &amp;quot;matches&amp;quot; : [&amp;quot;&amp;lt;all_urls&amp;gt;&amp;quot;, &amp;quot;http://*/*&amp;quot;, &amp;quot;https://*/*&amp;quot;],
+      &amp;quot;css&amp;quot; : [&amp;quot;content.css&amp;quot;],
+      &amp;quot;js&amp;quot; : [&amp;quot;content.js&amp;quot;]
+    }
+  ],
+  &amp;quot;web_accessible_resources&amp;quot; : [&amp;quot;popup.html&amp;quot;]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;add-content-script-and-style&#34;&gt;Add Content Script and Style&lt;/h2&gt;
+
+&lt;p&gt;The manifest references several files that we will need to create. Let&amp;rsquo;s start
+with content.js:&lt;/p&gt;
+
+&lt;p&gt;```javascript content.js
+var iframe = document.createElement(&amp;lsquo;iframe&amp;rsquo;);
+iframe.src = chrome.extension.getURL(&amp;ldquo;popup.html&amp;rdquo;);
+iframe.className = &amp;lsquo;css-isolation-popup&amp;rsquo;;
+iframe.frameBorder = 0;
+document.body.appendChild(iframe);&lt;/p&gt;
+
+&lt;p&gt;chrome.runtime.onMessage.addListener(function(message) {
+  iframe.style.display = &amp;lsquo;none&amp;rsquo;;
+});&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;
+Here we&#39;re creating the iframe that will hold our popup. Try to make sure the
+`className` is something unique because this is the one style that may
+still interfere with the page the user visits. I&#39;m using `css-isolation-popup`.
+That style comes from content.css, which is referenced in the manifest. Let&#39;s
+add it real quick:
+
+```css content.css
+.css-isolation-popup {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I&amp;rsquo;m basically just giving the popup free reign over the entire window. It&amp;rsquo;s fine in
+my case because I have a shaded overlay that surrounds the actual popup. You might need
+to tweak this for your needs.&lt;/p&gt;
+
+&lt;h2 id=&#34;this-is-important&#34;&gt;This is Important&lt;/h2&gt;
+
+&lt;p&gt;One other thing you&amp;rsquo;ll notice from content.js is the chrome message handler.
+This brings up a very important point and huge caveat of content scripts in
+general, and especially using iframes within content scripts. You cannot
+directly access code within an iframe from other parts of your extension.
+It must use the chrome message
+passing to transfer information. In addition to this, the iframe
+cannot pass messages directly to the content script. Therefore, the
+iframe and content script must communicate with each other through
+the background page. This is explained in more detail
+&lt;a href=&#34;http://www.sitepoint.com/chrome-extensions-bridging-the-gap-between-layers/&#34;&gt;in this excellent post&lt;/a&gt;.
+I think this will be much more clear once we finish our example.&lt;/p&gt;
+
+&lt;h2 id=&#34;add-popup&#34;&gt;Add Popup&lt;/h2&gt;
+
+&lt;p&gt;Now let&amp;rsquo;s add the actual popup files, popup.html and popup.js:&lt;/p&gt;
+
+&lt;p&gt;```html popup.html
+&amp;lt;!doctype html&amp;gt;
+&lt;html&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;head&gt;
+&lt;style&gt;
+.overlay {
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  z-index: 1000;
+  opacity: .80;
+}
+.wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 200px;
+  margin-left: -200px;
+  margin-top: -100px;
+  text-align: center;
+  background-color:#FFFFFF;
+  z-index: 1100;
+}
+&lt;/style&gt;
+&lt;/head&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;body&gt;
+&lt;div class=&#39;overlay&#39;&gt;&lt;/div&gt;
+&lt;div class=&#39;wrapper&#39;&gt;
+  &lt;h1&gt;Click outside to hide&lt;/h1&gt;
+&lt;/div&gt;
+&lt;script src=&#39;popup.js&#39;&gt;&lt;/script&gt;
+&lt;/body&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;/html&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;
+Mostly just styling. The overlay is a shaded region which will fill the window
+surrounding our small popup. The popup lives inside the wrapper. I want to stress the
+fact that everything in here is completely isolated from whatever page the user
+is visiting. We can name our classes whatever we want with no fear of
+name collisions from the outside world. Perfect!
+
+We&#39;re sourcing popup.js from within popup.html. There&#39;s no need to
+add it in the manifest.
+
+```javascript popup.js
+chrome.runtime.onMessage.addListener(function(message) {
+  if (message == &#39;hide_popup&#39;) {
+    iframe.style.display = &#39;none&#39;;
+  }
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here we&amp;rsquo;re handling when the user clicks outside the popup, in the overlay
+region. When this happens we want to signal the content script to hide
+our iframe. But remember what we said earlier: we can&amp;rsquo;t communicate
+directly with the content script, so we need to send the message to
+the background page and have it forward it to the content script.&lt;/p&gt;
+
+&lt;h2 id=&#34;add-background-page&#34;&gt;Add Background Page&lt;/h2&gt;
+
+&lt;p&gt;Add the background page as follows:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;javascript background.js
+chrome.runtime.onMessage.addListener(function(message, sender) {
+  chrome.tabs.sendMessage(sender.tab.id, message);
+});
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Literally all it does is repeat whatever messages it receives back out to the
+tab it received it from. It&amp;rsquo;s worth noting here that both content.js and
+popup.js will receive the forwarded message, so it&amp;rsquo;s actually being
+reflected back to the popup where it originated.&lt;/p&gt;
+
+&lt;p&gt;So at the end of the day, here&amp;rsquo;s what happens:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;User clicks shaded region&lt;/li&gt;
+&lt;li&gt;popup.js detects the click and sends the message &lt;code&gt;hide_popup&lt;/code&gt; to background.js&lt;/li&gt;
+&lt;li&gt;background.js receives the message, and broadcasts it to the tab where it originated&lt;/li&gt;
+&lt;li&gt;content.js receives the message, and if it is &lt;code&gt;hide_popup&lt;/code&gt; it hides the iframe&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;And there you have it! Load this puppy into chrome, and any page you visit should
+display a popup. Clicking in the faded area around it makes it disappear.
+This is a barebones example to be sure but it should
+be fairly straightforward to augment with additional functionality.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

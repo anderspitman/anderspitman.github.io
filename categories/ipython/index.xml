@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ipython on Anders Pitman&#39;s blog</title>
+    <link>http://anderspitman.com/categories/ipython/index.xml</link>
+    <description>Recent content in Ipython on Anders Pitman&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Powered by [Hugo](http://gohugo.io).</copyright>
+    <atom:link href="http://anderspitman.com/categories/ipython/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Setting up an IPython Development Environment from Source</title>
+      <link>http://anderspitman.com/2014/06/15/setting-up-an-ipython-development-environment-from-source/</link>
+      <pubDate>Sun, 15 Jun 2014 22:40:00 +0000</pubDate>
+      
+      <guid>http://anderspitman.com/2014/06/15/setting-up-an-ipython-development-environment-from-source/</guid>
+      <description>
+
+&lt;p&gt;I recently decided to start hacking on the excellent &lt;a href=&#34;http://ipython.org/&#34;&gt;IPython&lt;/a&gt;
+project. I wanted
+to have full control over the versions of all the software involved, which
+meant compiling Python from source. This guide is intended to take one through
+the entire process of setting up a custom Python build with virtualenv in the
+least number of steps possible, with the final goal of building a virtualenv
+specifically for IPython dev work.&lt;/p&gt;
+
+&lt;p&gt;For this guide I&amp;rsquo;m using Mint 17 (based on Ubuntu 14.04). Most of the commands
+should be very similar for most modern Linux systems. The biggest things that
+will be different is installing build dependencies. Usually on debian based
+system that will involve something along the lines of:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo apt-get install build-essential
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And maybe a few other packages.&lt;/p&gt;
+
+&lt;h2 id=&#34;building-and-installing-python&#34;&gt;Building and Installing Python&lt;/h2&gt;
+
+&lt;p&gt;For this example I will be installing to /opt/python277. First, create the
+directory:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo mkdir -p /opt/python277
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we&amp;rsquo;ll get the python source.
+I want to use the latest Python 2.7. As of this writing it&amp;rsquo;s 2.7.7.
+get it &lt;a href=&#34;https://www.python.org/ftp/python/2.7.7/Python-2.7.7.tar.xz&#34;&gt;here&lt;/a&gt;.
+You should be able to follow these instructions with any 2.7.x version. 3.x
+should work as well, but might be a little different.&lt;/p&gt;
+
+&lt;p&gt;Extract the downloaded tarball and go into the directory:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;tar -xvf Python-2.7.7.tar.xz
+cd Python-2.7.7
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We will now configure Python source:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;export LD_RUN_PATH=/opt/python277/lib
+./configure --prefix=/opt/python277 --enable-shared
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;What we&amp;rsquo;re doing here is telling python to install to /opt/python277
+and to be available as a shared library. This is important for
+certain packages such as PySide, which we&amp;rsquo;ll install later. The LD_RUN_PATH tells it which
+library our python executable should link against at runtime. If
+we didn&amp;rsquo;t set that environment variable, it would link against the
+system&amp;rsquo;s python library, which causes all sorts of confusion.&lt;/p&gt;
+
+&lt;p&gt;Now make and install:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;make
+sudo make install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This will install a fresh python into /opt/python277. You can test it by running&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;/opt/python277/bin/python
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You should get a python 2.7.7 prompt.&lt;/p&gt;
+
+&lt;h2 id=&#34;setting-up-package-management-and-virtualenv&#34;&gt;Setting up Package Management and virtualenv&lt;/h2&gt;
+
+&lt;p&gt;The next thing we want to do is get pip up and running as quickly as possible,
+so that we can use it for all our package management. We&amp;rsquo;ll download pip
+directory from pypi. It depends on setuptools, so download that
+&lt;a href=&#34;https://pypi.python.org/packages/source/s/setuptools/setuptools-4.0.1.tar.gz#md5=190b1d4470de9bae0b4414353e14700d&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Then extract and install it:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;tar -xzvf setuptools-4.0.1.tar.gz
+cd setuptools-4.0.1/
+sudo /opt/python277/bin/python setup.py install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now do the same thing with pip. The one I used is
+&lt;a href=&#34;https://pypi.python.org/packages/source/p/pip/pip-1.5.6.tar.gz#md5=01026f87978932060cc86c1dc527903e&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;tar -xzvf pip-1.5.6.tar.gz
+cd pip-1.5.6/
+sudo /opt/python277/bin/python setup.py install
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Alright, we should now be able to install most python packages from pypi simply
+with pip now. The first thing we need is virtualenv. If you&amp;rsquo;re not familiar with
+virtualenv, it&amp;rsquo;s awesome. Check it out &lt;a href=&#34;http://virtualenv.readthedocs.org/en/latest/&#34;&gt;here&lt;/a&gt;.
+Install it with:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo /opt/python277/bin/pip install virtualenv
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;set-up-ipython-virtualenv&#34;&gt;Set up IPython virtualenv&lt;/h2&gt;
+
+&lt;p&gt;We&amp;rsquo;ll now create a virtualenv just for ipython development. I like to keep my
+virtualenvs in ~/virt_python.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;mkdir ~/virt_python
+cd ~/virt_python
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Create the virtualenv. I&amp;rsquo;ll call it &amp;ldquo;ipython-dev&amp;rdquo;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;/opt/python277/bin/virtualenv ipython-dev
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Activate it:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;source ipython-dev/bin/activate
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now when we run python or pip it will use the executables in
+~/virt_python/ipython-dev, and any packages we install with pip
+will only affect our ipython virtualenv.&lt;/p&gt;
+
+&lt;h2 id=&#34;install-dependencies&#34;&gt;Install Dependencies&lt;/h2&gt;
+
+&lt;p&gt;The IPython dependencies we need will depend on which parts of IPython you want
+to work on. For example, to run the notebook we&amp;rsquo;ll want numpy, ZeroMQ, jinja,
+and tornado. It&amp;rsquo;s now simply a
+matter of using pip:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;pip install numpy pyzmq jinja2 tornado
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Alternatively you can install the dependencies for a specific IPython console
+automatically as explained below.&lt;/p&gt;
+
+&lt;p&gt;I want to run the IPython QT console, which depends on QT. I like the &lt;a href=&#34;http://qt-project.org/wiki/pyside&#34;&gt;PySide&lt;/a&gt;
+python bindings. First install QT. On my system I needed:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;sudo apt-get install qt4-default
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then install PySide:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;export PYTHON_INCLUDE_DIRS=/opt/python277/lib
+pip install pyside
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We need to set PYTHON_INCLUDE_DIRS so that qmake knows what to build against.&lt;/p&gt;
+
+&lt;h2 id=&#34;get-the-ipython-source&#34;&gt;Get the IPython Source&lt;/h2&gt;
+
+&lt;p&gt;Clone the repository from github into ~/ipython-dev:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;cd
+git clone https://github.com/ipython/ipython ipython-dev
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Install dependencies for the IPython notebook with the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;pip install -e &amp;quot;.[notebook]&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This also creates an IPython executable in your virtualenv so as long as it is
+active you can simply run&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;ipython
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;to run IPython from your development source.&lt;/p&gt;
+
+&lt;p&gt;You should now be set to start hacking!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

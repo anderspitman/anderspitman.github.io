@@ -1,0 +1,311 @@
+<!doctype html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Anders Pitman&#39;s blog</title>
+        <meta name="author">
+        <meta name="description" content="Personal Blog">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="Hugo 0.19-DEV" />
+        <link href="http://anderspitman.com/post/index.xml" rel="alternate" type="application/rss+xml" title="Anders Pitman&#39;s blog" />
+        <link href="http://anderspitman.com/post/index.xml" rel="feed" type="application/rss+xml" title="Anders Pitman&#39;s blog" />
+        <link href='//fonts.googleapis.com/css?family=Roboto:400,300,700|Noto+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="http://anderspitman.com/css/styles.css">
+        <link rel="icon" href="http://anderspitman.com/favicon.ico">
+        <link rel="apple-touch-icon" href="http://anderspitman.com/apple-touch-icon.png" />
+        <link rel="stylesheet" href="http://anderspitman.com/css/highlightjs/monokai.css">
+        <script src="http://anderspitman.com/js/vendor/modernizr-2.8.0.min.js"></script>
+        
+        <style>
+        .site-header h2 .logo {
+        background: url(http://anderspitman.com/img/colorado.jpg) no-repeat 0 0;
+        }
+        @media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+          .site-header h2 .logo {
+            background-image: url(http://anderspitman.com/img/colorado.jpg);
+        }}
+       .site-header {
+         background: #2a373d url(http://anderspitman.com/img/colorado.jpg) no-repeat center center;
+         z-index: -1;
+        }
+        </style>
+    </head>
+    <body>
+        
+        <header class="site-header">
+          <div class="transparent-layer">
+              <h2></h2>
+          </div>
+        </header>
+
+
+<div class="container clearfix">
+    <main role="main" class="content">
+        <article class="post">
+            <a class="btn home" href="http://anderspitman.com/" title="">&laquo; </a>
+            
+<h1><a href="http://anderspitman.com/2014/06/15/setting-up-an-ipython-development-environment-from-source/" title="Setting up an IPython Development Environment from Source">Setting up an IPython Development Environment from Source</a></h1>
+
+<footer class="post-info"> <span class="post-meta"><time datetime="2014.06.15">2014.06.15</time>
+
+</span>
+</footer>
+
+            
+
+<p>I recently decided to start hacking on the excellent <a href="http://ipython.org/">IPython</a>
+project. I wanted
+to have full control over the versions of all the software involved, which
+meant compiling Python from source. This guide is intended to take one through
+the entire process of setting up a custom Python build with virtualenv in the
+least number of steps possible, with the final goal of building a virtualenv
+specifically for IPython dev work.</p>
+
+<p>For this guide I&rsquo;m using Mint 17 (based on Ubuntu 14.04). Most of the commands
+should be very similar for most modern Linux systems. The biggest things that
+will be different is installing build dependencies. Usually on debian based
+system that will involve something along the lines of:</p>
+
+<pre><code class="language-bash">sudo apt-get install build-essential
+</code></pre>
+
+<p>And maybe a few other packages.</p>
+
+<h2 id="building-and-installing-python">Building and Installing Python</h2>
+
+<p>For this example I will be installing to /opt/python277. First, create the
+directory:</p>
+
+<pre><code class="language-bash">sudo mkdir -p /opt/python277
+</code></pre>
+
+<p>Now we&rsquo;ll get the python source.
+I want to use the latest Python 2.7. As of this writing it&rsquo;s 2.7.7.
+get it <a href="https://www.python.org/ftp/python/2.7.7/Python-2.7.7.tar.xz">here</a>.
+You should be able to follow these instructions with any 2.7.x version. 3.x
+should work as well, but might be a little different.</p>
+
+<p>Extract the downloaded tarball and go into the directory:</p>
+
+<pre><code class="language-bash">tar -xvf Python-2.7.7.tar.xz
+cd Python-2.7.7
+</code></pre>
+
+<p>We will now configure Python source:</p>
+
+<pre><code class="language-bash">export LD_RUN_PATH=/opt/python277/lib
+./configure --prefix=/opt/python277 --enable-shared
+</code></pre>
+
+<p>What we&rsquo;re doing here is telling python to install to /opt/python277
+and to be available as a shared library. This is important for
+certain packages such as PySide, which we&rsquo;ll install later. The LD_RUN_PATH tells it which
+library our python executable should link against at runtime. If
+we didn&rsquo;t set that environment variable, it would link against the
+system&rsquo;s python library, which causes all sorts of confusion.</p>
+
+<p>Now make and install:</p>
+
+<pre><code class="language-bash">make
+sudo make install
+</code></pre>
+
+<p>This will install a fresh python into /opt/python277. You can test it by running</p>
+
+<pre><code class="language-bash">/opt/python277/bin/python
+</code></pre>
+
+<p>You should get a python 2.7.7 prompt.</p>
+
+<h2 id="setting-up-package-management-and-virtualenv">Setting up Package Management and virtualenv</h2>
+
+<p>The next thing we want to do is get pip up and running as quickly as possible,
+so that we can use it for all our package management. We&rsquo;ll download pip
+directory from pypi. It depends on setuptools, so download that
+<a href="https://pypi.python.org/packages/source/s/setuptools/setuptools-4.0.1.tar.gz#md5=190b1d4470de9bae0b4414353e14700d">here</a></p>
+
+<p>Then extract and install it:</p>
+
+<pre><code class="language-bash">tar -xzvf setuptools-4.0.1.tar.gz
+cd setuptools-4.0.1/
+sudo /opt/python277/bin/python setup.py install
+</code></pre>
+
+<p>Now do the same thing with pip. The one I used is
+<a href="https://pypi.python.org/packages/source/p/pip/pip-1.5.6.tar.gz#md5=01026f87978932060cc86c1dc527903e">here</a></p>
+
+<pre><code class="language-bash">tar -xzvf pip-1.5.6.tar.gz
+cd pip-1.5.6/
+sudo /opt/python277/bin/python setup.py install
+</code></pre>
+
+<p>Alright, we should now be able to install most python packages from pypi simply
+with pip now. The first thing we need is virtualenv. If you&rsquo;re not familiar with
+virtualenv, it&rsquo;s awesome. Check it out <a href="http://virtualenv.readthedocs.org/en/latest/">here</a>.
+Install it with:</p>
+
+<pre><code class="language-bash">sudo /opt/python277/bin/pip install virtualenv
+</code></pre>
+
+<h2 id="set-up-ipython-virtualenv">Set up IPython virtualenv</h2>
+
+<p>We&rsquo;ll now create a virtualenv just for ipython development. I like to keep my
+virtualenvs in ~/virt_python.</p>
+
+<pre><code class="language-bash">mkdir ~/virt_python
+cd ~/virt_python
+</code></pre>
+
+<p>Create the virtualenv. I&rsquo;ll call it &ldquo;ipython-dev&rdquo;:</p>
+
+<pre><code class="language-bash">/opt/python277/bin/virtualenv ipython-dev
+</code></pre>
+
+<p>Activate it:</p>
+
+<pre><code class="language-bash">source ipython-dev/bin/activate
+</code></pre>
+
+<p>Now when we run python or pip it will use the executables in
+~/virt_python/ipython-dev, and any packages we install with pip
+will only affect our ipython virtualenv.</p>
+
+<h2 id="install-dependencies">Install Dependencies</h2>
+
+<p>The IPython dependencies we need will depend on which parts of IPython you want
+to work on. For example, to run the notebook we&rsquo;ll want numpy, ZeroMQ, jinja,
+and tornado. It&rsquo;s now simply a
+matter of using pip:</p>
+
+<pre><code class="language-bash">pip install numpy pyzmq jinja2 tornado
+</code></pre>
+
+<p>Alternatively you can install the dependencies for a specific IPython console
+automatically as explained below.</p>
+
+<p>I want to run the IPython QT console, which depends on QT. I like the <a href="http://qt-project.org/wiki/pyside">PySide</a>
+python bindings. First install QT. On my system I needed:</p>
+
+<pre><code class="language-bash">sudo apt-get install qt4-default
+</code></pre>
+
+<p>Then install PySide:</p>
+
+<pre><code class="language-bash">export PYTHON_INCLUDE_DIRS=/opt/python277/lib
+pip install pyside
+</code></pre>
+
+<p>We need to set PYTHON_INCLUDE_DIRS so that qmake knows what to build against.</p>
+
+<h2 id="get-the-ipython-source">Get the IPython Source</h2>
+
+<p>Clone the repository from github into ~/ipython-dev:</p>
+
+<pre><code class="language-bash">cd
+git clone https://github.com/ipython/ipython ipython-dev
+</code></pre>
+
+<p>Install dependencies for the IPython notebook with the following:</p>
+
+<pre><code class="language-bash">pip install -e &quot;.[notebook]&quot;
+</code></pre>
+
+<p>This also creates an IPython executable in your virtualenv so as long as it is
+active you can simply run</p>
+
+<pre><code class="language-bash">ipython
+</code></pre>
+
+<p>to run IPython from your development source.</p>
+
+<p>You should now be set to start hacking!</p>
+
+            <ul class="share-buttons">
+    <li></li>
+    <li>
+        <a class="icon-facebook-squared" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2fanderspitman.com%2f2014%2f06%2f15%2fsetting-up-an-ipython-development-environment-from-source%2f" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title=""></a>
+    </li>
+    <li>
+        <a class="icon-twitter" href="https://twitter.com/share?text=Setting%20up%20an%20IPython%20Development%20Environment%20from%20Source&amp;url=http%3a%2f%2fanderspitman.com%2f2014%2f06%2f15%2fsetting-up-an-ipython-development-environment-from-source%2f" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title=""></a>
+    </li>
+    <li>
+        <a class="icon-gplus" href="https://plus.google.com/share?url=http%3a%2f%2fanderspitman.com%2f2014%2f06%2f15%2fsetting-up-an-ipython-development-environment-from-source%2f" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title=""></a>
+    </li>
+    <li>
+        <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=http%3a%2f%2fanderspitman.com%2f2014%2f06%2f15%2fsetting-up-an-ipython-development-environment-from-source%2f&title=Setting%20up%20an%20IPython%20Development%20Environment%20from%20Source" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=494');return false;" title=""></a>
+    </li>
+</ul>
+
+        </article>
+        <div class="comments">
+            <h3></h3>
+            
+        </div>
+    </main>
+    <aside class="author">
+  <img class="profile-image" src="http://anderspitman.com/img/portrait.jpg" alt="Anders Pitman" />
+  <p class="name"> 
+  <strong>Anders Pitman</strong></p>
+  <p class="address">USA, Arizona, Tempe</p>
+  <p class="link"></p>
+  <ul class="social">
+    
+<li><a href="//twitter.com/anderspitman" class="icon-twitter" target="_blank" title="Twitter"></a></li>
+
+
+
+
+
+<li><a href="//linkedin.com/in/anderspitman" class="icon-linkedin" target="_blank" title="Linkedin"></a></li>
+
+
+
+
+
+
+
+
+
+<li><a href="//github.com/anderspitman" class="icon-github" target="_blank" title="Github"></a></li>
+
+
+
+
+<li><a href="http://anderspitman.com/post/index.xml" class="icon-rss" target="_blank" title="RSS"></a></li>
+
+  </ul>
+  <br><br>
+</aside>
+
+</div>
+
+<footer class="main-footer">
+  <div class="container clearfix">
+        <a class="icon-rss" href="http://anderspitman.com/post/index.xml" title="RSS"></a>
+        <p>&copy; 2016 &middot; Powered by <a href="http://gohugo.io">Hugo</a>.</p>
+  </div>
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>window.jQuery || document.write('<script src="http:\/\/anderspitman.com\/js\/vendor\/jquery-1.11.0.min.js"><\/script>')</script>
+<script src="http://anderspitman.com/js/plugins.js"></script>
+
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-89445274-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>
+

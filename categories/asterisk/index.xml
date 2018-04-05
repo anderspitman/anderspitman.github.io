@@ -2,174 +2,23 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Asterisk on Anders Pitman&#39;s blog</title>
-    <link>http://anderspitman.com/categories/asterisk/index.xml</link>
+    <link>https://anderspitman.github.io/categories/asterisk/</link>
     <description>Recent content in Asterisk on Anders Pitman&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <copyright>Powered by [Hugo](http://gohugo.io).</copyright>
-    <atom:link href="http://anderspitman.com/categories/asterisk/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 21 Jul 2014 10:41:56 +0000</lastBuildDate>
+    
+	<atom:link href="https://anderspitman.github.io/categories/asterisk/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
       <title>Asterisk ARI Quickstart Tutorial in Python</title>
-      <link>http://anderspitman.com/2014/07/21/asterisk-ari-quickstart-in-python/</link>
+      <link>https://anderspitman.github.io/2014/07/21/asterisk-ari-quickstart-in-python/</link>
       <pubDate>Mon, 21 Jul 2014 10:41:56 +0000</pubDate>
       
-      <guid>http://anderspitman.com/2014/07/21/asterisk-ari-quickstart-in-python/</guid>
-      <description>
-
-&lt;p&gt;The purpose of this post is to get Asterisk users up and running with the Asterisk 12 ARI
-with Python as quickly as possible. I&amp;rsquo;m assuming:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;You know what the ARI is&lt;/li&gt;
-&lt;li&gt;You know at least the basics of using Asterisk&lt;/li&gt;
-&lt;li&gt;You have Asterisk 12 installed&lt;/li&gt;
-&lt;li&gt;You have Python with pip installed (preferably inside a virtualenv)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I followed this other tutorial closely, particularly the implementation of
-the websocket stuff:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://wiki.asterisk.org/wiki/display/AST/Getting+Started+with+ARI&#34;&gt;https://wiki.asterisk.org/wiki/display/AST/Getting+Started+with+ARI&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;For more info refer to the &lt;a href=&#34;https://wiki.asterisk.org/wiki/display/AST/Asterisk+12+ARI&#34;&gt;Official ARI Page&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Note that I&amp;rsquo;m implementing my own interface for the REST calls, since it&amp;rsquo;s
-a simple example. For a full blown application you&amp;rsquo;ll probably want to use something
-like &lt;a href=&#34;https://github.com/kickstandproject/python-ari&#34;&gt;python-ari&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;set-up-asterisk&#34;&gt;Set up Asterisk&lt;/h2&gt;
-
-&lt;h3 id=&#34;enable-http-server&#34;&gt;Enable HTTP server&lt;/h3&gt;
-
-&lt;p&gt;Asterisk&amp;rsquo;s HTTP server is disabled by default. Open &lt;strong&gt;http.conf&lt;/strong&gt; and make sure
-the following are uncommented.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;enabled=yes
-bindaddr=127.0.0.1
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;enable-and-set-up-ari&#34;&gt;Enable and set up ARI&lt;/h3&gt;
-
-&lt;p&gt;Open &lt;strong&gt;ari.conf&lt;/strong&gt; and uncomment:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;enabled=yes
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;And add the following to the end of the file:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[hey]
-type=user
-password=peekaboo
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;create-an-extension&#34;&gt;Create an extension&lt;/h3&gt;
-
-&lt;p&gt;We need an entry point for Asterisk to pass control into our ARI app. Just
-set up an extension that opens the Statis app as shown below. I&amp;rsquo;m using
-extension 100 in the example &lt;strong&gt;extensions.conf&lt;/strong&gt;:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[default]
-exten =&amp;gt; 100,1,Noop()
-      same =&amp;gt; n,Stasis(hello,world) ; hello is the name of the application
-                                    ; world is its argument list
-      same =&amp;gt; n,Hangup()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;get-the-code&#34;&gt;Get the Code&lt;/h2&gt;
-
-&lt;p&gt;Either clone my repo at &lt;a href=&#34;https://github.com/anderspitman/ari-quickstart&#34;&gt;https://github.com/anderspitman/ari-quickstart&lt;/a&gt; or
-just copy and paste the script from below.&lt;/p&gt;
-
-&lt;p&gt;You&amp;rsquo;ll need to install requests and websocket-client. If you cloned the
-repo just do:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;pip install -r requirements.txt
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Otherwise install them manually:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;pip install requests websocket-client
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;#!/usr/bin/env python
-
-import json
-import sys
-import websocket
-import threading
-import Queue
-import requests
-
-
-class ARIInterface(object):
-    def __init__(self, server_addr, username, password):
-        self._req_base = &amp;quot;http://%s:8088/ari/&amp;quot; % server_addr
-        self._username = username
-        self._password = password
-
-    def answer_call(self, channel_id):
-        req_str = self._req_base+&amp;quot;channels/%s/answer&amp;quot; % channel_id
-        self._send_post_request(req_str)
-
-    def play_sound(self, channel_id, sound_name):
-        req_str = self._req_base+(&amp;quot;channels/%s/play?media=sound:%s&amp;quot; % (channel_id, sound_name))
-        self._send_post_request(req_str)
-
-    def _send_post_request(self, req_str):
-        r = requests.post(req_str, auth=(self._username, self._password))
-
-
-class ARIApp(object):
-    def __init__(self, server_addr):
-        app_name = &#39;hello&#39;
-        username = &#39;hey&#39;
-        password = &#39;peekaboo&#39;
-        url = &amp;quot;ws://%s:8088/ari/events?app=%s&amp;amp;api_key=%s:%s&amp;quot; % (server_addr, app_name, username, password)
-        ari = ARIInterface(server_addr, username, password)
-        ws = websocket.create_connection(url)
-
-        try:
-            for event_str in iter(lambda: ws.recv(), None):
-                event_json = json.loads(event_str)
-
-                json.dump(event_json, sys.stdout, indent=2, sort_keys=True,
-                          separators=(&#39;,&#39;, &#39;: &#39;))
-                print(&amp;quot;\n\nWebsocket event***************************************************\n&amp;quot;)
-
-                if event_json[&#39;type&#39;] == &#39;StasisStart&#39;:
-                    ari.answer_call(event_json[&#39;channel&#39;][&#39;id&#39;])
-                    ari.play_sound(event_json[&#39;channel&#39;][&#39;id&#39;], &#39;tt-monkeys&#39;)
-        except websocket.WebSocketConnectionClosedException:
-            print(&amp;quot;Websocket connection closed&amp;quot;)
-        except KeyboardInterrupt:
-            print(&amp;quot;Keyboard interrupt&amp;quot;)
-        finally:
-            if ws:
-                ws.close()
-
-
-if __name__ == &amp;quot;__main__&amp;quot;:
-    app = ARIApp(&#39;localhost&#39;)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;try-it-out&#34;&gt;Try it Out&lt;/h2&gt;
-
-&lt;p&gt;Start/Restart Asterisk and once it&amp;rsquo;s up run the script:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;python ari-quickstart.py
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If it doesn&amp;rsquo;t throw any exceptions it should be connected and listening for ARI
-events. Dial the Statis extension (100 in my case) and you should hear monkeys.&lt;/p&gt;
-
-&lt;p&gt;The script should be easy to modify to add more functionality. It&amp;rsquo;s a good
-starting point for creating more full featured apps. The biggest thing
-to worry about is that there&amp;rsquo;s a good chance you won&amp;rsquo;t want your app
-blocking on the websocket receive calls. A simple solution is to handle
-events in a separate thread and use a Python queue to pass the received
-messages in.&lt;/p&gt;
-</description>
+      <guid>https://anderspitman.github.io/2014/07/21/asterisk-ari-quickstart-in-python/</guid>
+      <description>The purpose of this post is to get Asterisk users up and running with the Asterisk 12 ARI with Python as quickly as possible. I&amp;rsquo;m assuming:
+ You know what the ARI is You know at least the basics of using Asterisk You have Asterisk 12 installed You have Python with pip installed (preferably inside a virtualenv)  I followed this other tutorial closely, particularly the implementation of the websocket stuff:</description>
     </item>
     
   </channel>

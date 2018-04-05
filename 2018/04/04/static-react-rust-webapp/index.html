@@ -1,0 +1,379 @@
+<!doctype html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Anders Pitman&#39;s blog</title>
+        <meta name="author">
+        <meta name="description" content="Personal Blog">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="generator" content="Hugo 0.38" />
+        <link href="https://anderspitman.github.io/post/index.xml" rel="alternate" type="application/rss+xml" title="Anders Pitman&#39;s blog" />
+        <link href="https://anderspitman.github.io/post/index.xml" rel="feed" type="application/rss+xml" title="Anders Pitman&#39;s blog" />
+        <link href='//fonts.googleapis.com/css?family=Roboto:400,300,700|Noto+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://anderspitman.github.io/css/styles.css">
+        <link rel="icon" href="https://anderspitman.github.io/favicon.ico">
+        <link rel="apple-touch-icon" href="https://anderspitman.github.io/apple-touch-icon.png" />
+        <link rel="stylesheet" href="https://anderspitman.github.io/css/highlightjs/monokai.css">
+        <script src="https://anderspitman.github.io/js/vendor/modernizr-2.8.0.min.js"></script>
+        
+        <style>
+        .site-header h2 .logo {
+        background: url(https://anderspitman.github.io/img/libros_libres.jpg) no-repeat 0 0;
+        }
+        @media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
+          .site-header h2 .logo {
+            background-image: url(https://anderspitman.github.io/img/libros_libres.jpg);
+        }}
+       .site-header {
+         background: #2a373d url(https://anderspitman.github.io/img/libros_libres.jpg) no-repeat center center;
+         z-index: -1;
+        }
+        </style>
+    </head>
+    <body>
+        
+        <header class="site-header">
+          <div class="transparent-layer">
+              <h2></h2>
+          </div>
+        </header>
+
+
+<div class="container clearfix">
+    <main role="main" class="content">
+        <article class="post">
+            <a class="btn home" href="https://anderspitman.github.io" title="">&laquo; </a>
+            
+<h1><a href="https://anderspitman.github.io/2018/04/04/static-react-rust-webapp/" title="Making a 100% Statically-Linked Single-File Web App with React and Rust">Making a 100% Statically-Linked Single-File Web App with React and Rust</a></h1>
+
+<footer class="post-info"> <span class="post-meta"><time datetime="2018.04.04">2018.04.04</time>
+
+</span>
+</footer>
+
+            
+
+<p>This tutorial will cover the basics of creating a minimal React app which can
+be deployed as a statically-linked Rust binary.</p>
+
+<h1 id="why">Why?</h1>
+
+<ul>
+<li>Simpler deployment. Having a static binary means you just have to copy the
+file to your servers and run it.</li>
+<li>Cross platform GUI apps. One of the biggest challenges in creating
+cross-platform GUI app is working with a GUI library that targets all the
+platforms you&rsquo;re interested in. The approach here lets you leverage the
+user&rsquo;s browser for this purpose. This is somewhat similar to what
+<a href="https://electronjs.org/">Electron</a> accomplishes, but your backend is in
+Rust rather than JavaScript, and the user navigates to the app from their
+browser.</li>
+<li>Because I&rsquo;ve been obsessed with static linking for as long as I can
+remember and I&rsquo;m not really sure why.</li>
+</ul>
+
+<h1 id="prerequisites">Prerequisites</h1>
+
+<ul>
+<li>Linux build environment</li>
+<li><a href="https://www.rust-lang.org/en-US/install.html">Rust with cargo</a></li>
+<li><a href="https://nodejs.org/en/">node with npm</a></li>
+</ul>
+
+<h1 id="initialize-the-project-directory">Initialize the project directory</h1>
+
+<p>We&rsquo;re going to let cargo manage the project directory for us. Run the following
+commands:</p>
+
+<pre><code class="language-bash">cargo new --bin react_rust_webapp
+cd react_rust_webapp
+</code></pre>
+
+<h1 id="create-the-react-app">Create the React app</h1>
+
+<p>First install React, Babel, and Webpack:</p>
+
+<pre><code class="language-bash">mkdir ui
+cd ui
+npm init -y
+npm install --save react react-dom
+npm install --save-dev babel-core babel-loader babel-preset-env babel-preset-react webpack webpack-cli
+</code></pre>
+
+<p>Then create the source files:</p>
+
+<pre><code class="language-bash">mkdir dist
+touch dist/index.html
+mkdir src
+touch src/index.js
+</code></pre>
+
+<p>Put the following content in <code>dist/index.html</code>:</p>
+
+<pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Static React and Rust&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
+    &lt;script src=&quot;/main.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>And set <code>src/index.js</code> to the following:</p>
+
+<pre><code class="language-javascript">import React from 'react';
+import ReactDOM from 'react-dom';
+
+ReactDOM.render(
+  &lt;h1&gt;Hi there&lt;/h1&gt;,
+  document.getElementById('root')
+);
+</code></pre>
+
+<p>We will also need a <code>.babelrc</code> file:</p>
+
+<pre><code class="language-json">{
+  &quot;presets&quot;: [
+    &quot;react&quot;,
+    &quot;env&quot;,
+  ],
+}
+</code></pre>
+
+<p>And a <code>webpack.config.js</code> file:</p>
+
+<pre><code class="language-javascript">const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+        }
+      }
+    ]
+  }
+};
+</code></pre>
+
+<p>You should now be able to test that the frontend stuff is working. Run:</p>
+
+<pre><code class="language-bash">npx webpack --mode development
+</code></pre>
+
+<p>This will generate <code>dist/bundle.js</code>. If you start a web server in the <code>dist</code>
+directory you should be able to successfully serve the example content.</p>
+
+<p>Now for the Rust part.</p>
+
+<h1 id="setting-up-the-rust-backend">Setting up the Rust backend</h1>
+
+<p>Move up to the <code>react_rust_webapp</code> directory:</p>
+
+<pre><code class="language-bash">cd ..
+</code></pre>
+
+<p>First thing we need to do is install a web framework. I found <a href="https://github.com/tomaka/rouille">Rouille</a>
+to be great for this simple example. I also really love <a href="https://github.com/SergioBenitez/Rocket">Rocket</a>.</p>
+
+<p>Add rouille to your Cargo.toml dependencies:</p>
+
+<pre><code class="language-toml">[package]
+name = &quot;react_rust_webapp&quot;
+version = &quot;0.1.0&quot;
+
+[dependencies]
+rouille = &quot;2.1.0&quot;
+</code></pre>
+
+<p>Now modify <code>src/main.rs</code> to have the following content:</p>
+
+<pre><code class="language-javascript">#[macro_use]
+extern crate rouille;
+
+use rouille::Response;
+
+fn main() {
+    let index = include_str!(&quot;../ui/dist/index.html&quot;);
+    let bundle = include_str!(&quot;../ui/dist/bundle.js&quot;);
+    rouille::start_server(&quot;0.0.0.0:5000&quot;, move |request| {
+
+        let response = router!(request,
+            (GET) [&quot;/&quot;] =&gt; {
+                Response::html(index)
+            },
+            (GET) [&quot;/bundle.js&quot;] =&gt; {
+                Response::text(bundle)
+            },
+            _ =&gt; {
+                Response::empty_404()
+            }
+        );
+
+        response
+    });
+}
+</code></pre>
+
+<p>What is this doing?</p>
+
+<p>At compile time, <code>include_str!</code> reads the indicated file and inserts the
+contents as a static string into the compiled binary. This string is then
+available as a normal variable.</p>
+
+<p>The rouille code just sets up two HTTP endpoints, &ldquo;/&rdquo; and &ldquo;/bundle.js&rdquo;.
+Instead of returning the files from the filesystem as we&rsquo;d typically do with
+a web app, we&rsquo;re returning the contents of the statics strings from the binary.
+I was first introduced to this pattern by <a href="https://syncthing.net/">syncthing</a>,
+which is written in go but does a similar thing.</p>
+
+<p>To learn more about using Rouille to do more advanced stuff refer to their
+docs.</p>
+
+<h1 id="running-it">Running it</h1>
+
+<p>Alright, now if all went well we should be able to run it. Make sure
+<code>ui/dist/bundle.js</code> has already been generated as instructed above. Then run:</p>
+
+<pre><code class="language-bash">cargo run
+</code></pre>
+
+<p>It should start a server on port 5000. If you navigate to <a href="http://localhost:5000">http://localhost:5000</a>
+in your browser you should see &ldquo;Hi there&rdquo;.</p>
+
+<h1 id="static-linking">Static linking</h1>
+
+<p>This part can be skipped if you don&rsquo;t need 100% static linking. Rust statically
+links most libraries by default anyway, except for things like libc.</p>
+
+<p>If you do want to proceed, you&rsquo;ll first need to install <a href="https://www.musl-libc.org/">musl libc</a>
+on your system and ensure the musl-gcc command is on your PATH.</p>
+
+<p>Then, rerun cargo as follows:</p>
+
+<pre><code class="language-bash">cargo run --target=x86_64-unknown-linux-musl
+</code></pre>
+
+<h1 id="production-build">Production build</h1>
+
+<p>For smaller binaries, build <code>bundle.js</code> as follows (from with <code>ui/</code>):</p>
+
+<pre><code class="language-bash">npx webpack --mode production
+</code></pre>
+
+<p>And run cargo as follows:</p>
+
+<pre><code class="language-bash">cargo build --release --target=x86_64-unknown-linux-musl
+</code></pre>
+
+<p>You should end up with a statically linked binary in
+<code>react_rust_webapp/target/x86_64-unknown-linux-musl/release/</code></p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>This is just the basics. There&rsquo;s a lot more you could do with this, including:</p>
+
+<ul>
+<li>Use <code>build.rs</code> to automatically build the React app when you compile Rust.</li>
+<li>Take the port number from the command line</li>
+<li>Serialized (probably JSON) requests and responses</li>
+<li>Run webpack as an npm script command</li>
+</ul>
+
+            <ul class="share-buttons">
+    <li></li>
+    <li>
+        <a class="icon-facebook-squared" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fanderspitman.github.io%2f2018%2f04%2f04%2fstatic-react-rust-webapp%2f" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title=""></a>
+    </li>
+    <li>
+        <a class="icon-twitter" href="https://twitter.com/share?text=Making%20a%20100%25%20Statically-Linked%20Single-File%20Web%20App%20with%20React%20and%20Rust&amp;url=https%3a%2f%2fanderspitman.github.io%2f2018%2f04%2f04%2fstatic-react-rust-webapp%2f" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title=""></a>
+    </li>
+    <li>
+        <a class="icon-gplus" href="https://plus.google.com/share?url=https%3a%2f%2fanderspitman.github.io%2f2018%2f04%2f04%2fstatic-react-rust-webapp%2f" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title=""></a>
+    </li>
+    <li>
+        <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fanderspitman.github.io%2f2018%2f04%2f04%2fstatic-react-rust-webapp%2f&title=Making%20a%20100%25%20Statically-Linked%20Single-File%20Web%20App%20with%20React%20and%20Rust" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=494');return false;" title=""></a>
+    </li>
+</ul>
+
+        </article>
+        
+    </main>
+    <aside class="author">
+  <img class="profile-image" src="https://anderspitman.github.io/img/portrait.jpg" alt="Anders Pitman" />
+  <p class="name"> 
+  <strong>Anders Pitman</strong></p>
+  <p class="address">USA, Arizona, Tempe</p>
+  <p class="link"></p>
+  <ul class="social">
+    
+<li><a href="//twitter.com/anderspitman" class="icon-twitter" target="_blank" title="Twitter"></a></li>
+
+
+
+
+
+<li><a href="//linkedin.com/in/anderspitman" class="icon-linkedin" target="_blank" title="Linkedin"></a></li>
+
+
+
+
+
+
+
+
+
+<li><a href="//github.com/anderspitman" class="icon-github" target="_blank" title="Github"></a></li>
+
+
+
+
+<li><a href="https://anderspitman.github.iopost/index.xml" class="icon-rss" target="_blank" title="RSS"></a></li>
+
+  </ul>
+  <br><br>
+</aside>
+
+</div>
+
+<footer class="main-footer">
+  <div class="container clearfix">
+        <a class="icon-rss" href="https://anderspitman.github.io/post/index.xml" title="RSS"></a>
+        <p>&copy; 2018 &middot; Powered by <a href="http://gohugo.io">Hugo</a>.</p>
+  </div>
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>window.jQuery || document.write('<script src="https:\/\/anderspitman.github.io\/js\/vendor\/jquery-1.11.0.min.js"><\/script>')</script>
+<script src="https://anderspitman.github.io/js/plugins.js"></script>
+
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-89445274-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+</body>
+</html>
+

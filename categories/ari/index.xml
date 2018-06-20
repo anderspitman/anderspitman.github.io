@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Ari on Anders Pitman&#39;s blog</title>
-    <link>https://anderspitman.github.io/categories/ari/</link>
+    <link>https://anderspitman.net/categories/ari/</link>
     <description>Recent content in Ari on Anders Pitman&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 21 Jul 2014 10:41:56 +0000</lastBuildDate>
     
-	<atom:link href="https://anderspitman.github.io/categories/ari/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://anderspitman.net/categories/ari/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Asterisk ARI Quickstart Tutorial in Python</title>
-      <link>https://anderspitman.github.io/2014/07/21/asterisk-ari-quickstart-in-python/</link>
+      <link>https://anderspitman.net/2014/07/21/asterisk-ari-quickstart-in-python/</link>
       <pubDate>Mon, 21 Jul 2014 10:41:56 +0000</pubDate>
       
-      <guid>https://anderspitman.github.io/2014/07/21/asterisk-ari-quickstart-in-python/</guid>
+      <guid>https://anderspitman.net/2014/07/21/asterisk-ari-quickstart-in-python/</guid>
       <description>The purpose of this post is to get Asterisk users up and running with the Asterisk 12 ARI with Python as quickly as possible. I&amp;rsquo;m assuming:
  You know what the ARI is You know at least the basics of using Asterisk You have Asterisk 12 installed You have Python with pip installed (preferably inside a virtualenv)  I followed this other tutorial closely, particularly the implementation of the websocket stuff:</description>
     </item>

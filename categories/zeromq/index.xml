@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Zeromq on Anders Pitman&#39;s blog</title>
-    <link>https://anderspitman.github.io/categories/zeromq/</link>
+    <link>https://anderspitman.net/categories/zeromq/</link>
     <description>Recent content in Zeromq on Anders Pitman&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 15 Jun 2014 22:40:00 +0000</lastBuildDate>
     
-	<atom:link href="https://anderspitman.github.io/categories/zeromq/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://anderspitman.net/categories/zeromq/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Setting up an IPython Development Environment from Source</title>
-      <link>https://anderspitman.github.io/2014/06/15/setting-up-an-ipython-development-environment-from-source/</link>
+      <link>https://anderspitman.net/2014/06/15/setting-up-an-ipython-development-environment-from-source/</link>
       <pubDate>Sun, 15 Jun 2014 22:40:00 +0000</pubDate>
       
-      <guid>https://anderspitman.github.io/2014/06/15/setting-up-an-ipython-development-environment-from-source/</guid>
+      <guid>https://anderspitman.net/2014/06/15/setting-up-an-ipython-development-environment-from-source/</guid>
       <description>I recently decided to start hacking on the excellent IPython project. I wanted to have full control over the versions of all the software involved, which meant compiling Python from source. This guide is intended to take one through the entire process of setting up a custom Python build with virtualenv in the least number of steps possible, with the final goal of building a virtualenv specifically for IPython dev work.</description>
     </item>
     

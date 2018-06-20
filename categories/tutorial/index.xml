@@ -2,31 +2,32 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tutorial on Anders Pitman&#39;s blog</title>
-    <link>https://anderspitman.github.io/categories/tutorial/</link>
+    <link>https://anderspitman.net/categories/tutorial/</link>
     <description>Recent content in Tutorial on Anders Pitman&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 04 Apr 2018 21:21:00 +0000</lastBuildDate>
     
-	<atom:link href="https://anderspitman.github.io/categories/tutorial/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://anderspitman.net/categories/tutorial/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Making a 100% Statically-Linked Single-File Web App with React and Rust</title>
-      <link>https://anderspitman.github.io/2018/04/04/static-react-rust-webapp/</link>
+      <title>Making a 100% Statically-Linked, Single-File Web App with React and Rust</title>
+      <link>https://anderspitman.net/2018/04/04/static-react-rust-webapp/</link>
       <pubDate>Wed, 04 Apr 2018 21:21:00 +0000</pubDate>
       
-      <guid>https://anderspitman.github.io/2018/04/04/static-react-rust-webapp/</guid>
-      <description>This tutorial will cover the basics of creating a minimal React app which can be deployed as a statically-linked Rust binary.
-Why?  Simpler deployment. Having a static binary means you just have to copy the file to your servers and run it. Cross platform GUI apps. One of the biggest challenges in creating cross-platform GUI app is working with a GUI library that targets all the platforms you&amp;rsquo;re interested in.</description>
+      <guid>https://anderspitman.net/2018/04/04/static-react-rust-webapp/</guid>
+      <description>This tutorial will cover the basics of creating a minimal React app which can be deployed as a statically-linked Rust binary. What this accomplishes is having all of your code, including HTML, JavaScript, CSS, and Rust, packaged into a single file that will run on pretty much any 64-bit Linux system, regardless of the kernel version or installed libraries.
+Complete source is available on GitHub.
+Why?  Simpler deployment: Having a static binary means you just have to copy the file to your servers and run it.</description>
     </item>
     
     <item>
       <title>Chrome Extension PubSub</title>
-      <link>https://anderspitman.github.io/2014/08/30/chrome-extension-pubsub/</link>
+      <link>https://anderspitman.net/2014/08/30/chrome-extension-pubsub/</link>
       <pubDate>Sat, 30 Aug 2014 22:35:24 +0000</pubDate>
       
-      <guid>https://anderspitman.github.io/2014/08/30/chrome-extension-pubsub/</guid>
+      <guid>https://anderspitman.net/2014/08/30/chrome-extension-pubsub/</guid>
       <description>This tutorial builds the same Chrome extension popup as my Chrome Extension Content Script Stylesheet Isolation tutorial, but uses the chromeps pubsub module to make things easier. For more detailed information, I highly recommend looking through that tutorial.
 You can get all the code for this tutorial from https://github.com/anderspitman/chrome-extension-pubsub-example
 Background Info When writing chrome extensions with content scripts, you often find yourself doing a lot of message passing. If your content scripts include iframes, things get even more complicated because in order to communicate between the content scripts and their iframes, you have to ferry the messages back and forth using the background page.</description>
@@ -34,10 +35,10 @@ Background Info When writing chrome extensions with content scripts, you often f
     
     <item>
       <title>Chrome Extension Content Script Stylesheet Isolation</title>
-      <link>https://anderspitman.github.io/2014/08/04/chrome-extension-content-script-stylesheet-isolation/</link>
+      <link>https://anderspitman.net/2014/08/04/chrome-extension-content-script-stylesheet-isolation/</link>
       <pubDate>Mon, 04 Aug 2014 08:52:47 +0000</pubDate>
       
-      <guid>https://anderspitman.github.io/2014/08/04/chrome-extension-content-script-stylesheet-isolation/</guid>
+      <guid>https://anderspitman.net/2014/08/04/chrome-extension-content-script-stylesheet-isolation/</guid>
       <description>UPDATE 2014-08-30: For a way to handle message passing using the chromeps pubsub module, see this post.
 Background Info When writing Chrome extensions, if you want to inject HTML and CSS into pages the user is visiting, you use what&amp;rsquo;s called a content script. One reason you might want to do this would be to build a custom popup that activates on certain pages.
 One of the biggest problems people run in to is CSS corruption.</description>
@@ -45,10 +46,10 @@ One of the biggest problems people run in to is CSS corruption.</description>
     
     <item>
       <title>Asterisk ARI Quickstart Tutorial in Python</title>
-      <link>https://anderspitman.github.io/2014/07/21/asterisk-ari-quickstart-in-python/</link>
+      <link>https://anderspitman.net/2014/07/21/asterisk-ari-quickstart-in-python/</link>
       <pubDate>Mon, 21 Jul 2014 10:41:56 +0000</pubDate>
       
-      <guid>https://anderspitman.github.io/2014/07/21/asterisk-ari-quickstart-in-python/</guid>
+      <guid>https://anderspitman.net/2014/07/21/asterisk-ari-quickstart-in-python/</guid>
       <description>The purpose of this post is to get Asterisk users up and running with the Asterisk 12 ARI with Python as quickly as possible. I&amp;rsquo;m assuming:
  You know what the ARI is You know at least the basics of using Asterisk You have Asterisk 12 installed You have Python with pip installed (preferably inside a virtualenv)  I followed this other tutorial closely, particularly the implementation of the websocket stuff:</description>
     </item>

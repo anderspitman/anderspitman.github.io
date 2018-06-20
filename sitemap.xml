@@ -3,167 +3,172 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://anderspitman.github.io/2018/04/04/static-react-rust-webapp/</loc>
+    <loc>https://anderspitman.net/post/2018-06-19-rust-docker-barebones/</loc>
+    <lastmod>2018-06-19T12:14:12-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://anderspitman.net/2018/04/04/static-react-rust-webapp/</loc>
     <lastmod>2018-04-04T21:21:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/2014/12/17/fix-for-vimium-that-stopped-working/</loc>
+    <loc>https://anderspitman.net/2014/12/17/fix-for-vimium-that-stopped-working/</loc>
     <lastmod>2014-12-17T17:30:55+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/2014/12/01/how-to-install-the-play-store-on-your-fire-phone/</loc>
+    <loc>https://anderspitman.net/2014/12/01/how-to-install-the-play-store-on-your-fire-phone/</loc>
     <lastmod>2014-12-01T22:43:09+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/2014/08/30/chrome-extension-pubsub/</loc>
+    <loc>https://anderspitman.net/2014/08/30/chrome-extension-pubsub/</loc>
     <lastmod>2014-08-30T22:35:24+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/2014/08/04/chrome-extension-content-script-stylesheet-isolation/</loc>
+    <loc>https://anderspitman.net/2014/08/04/chrome-extension-content-script-stylesheet-isolation/</loc>
     <lastmod>2014-08-04T08:52:47+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/2014/07/21/asterisk-ari-quickstart-in-python/</loc>
+    <loc>https://anderspitman.net/2014/07/21/asterisk-ari-quickstart-in-python/</loc>
     <lastmod>2014-07-21T10:41:56+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/2014/06/15/setting-up-an-ipython-development-environment-from-source/</loc>
+    <loc>https://anderspitman.net/2014/06/15/setting-up-an-ipython-development-environment-from-source/</loc>
     <lastmod>2014-06-15T22:40:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/</loc>
+    <loc>https://anderspitman.net/</loc>
+    <lastmod>2018-06-19T12:14:12-07:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://anderspitman.net/categories/ari/</loc>
+    <lastmod>2014-07-21T10:41:56+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://anderspitman.net/categories/asterisk/</loc>
+    <lastmod>2014-07-21T10:41:56+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://anderspitman.net/categories/babel/</loc>
     <lastmod>2018-04-04T21:21:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/ari/</loc>
+    <loc>https://anderspitman.net/categories/</loc>
     <lastmod>2014-07-21T10:41:56+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/asterisk/</loc>
-    <lastmod>2014-07-21T10:41:56+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://anderspitman.github.io/categories/babel/</loc>
-    <lastmod>2018-04-04T21:21:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://anderspitman.github.io/categories/</loc>
-    <lastmod>2014-07-21T10:41:56+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://anderspitman.github.io/categories/chrome-extension/</loc>
+    <loc>https://anderspitman.net/categories/chrome-extension/</loc>
     <lastmod>2014-08-30T22:35:24+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/css/</loc>
+    <loc>https://anderspitman.net/categories/css/</loc>
     <lastmod>2014-08-30T22:35:24+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/css3/</loc>
+    <loc>https://anderspitman.net/categories/css3/</loc>
     <lastmod>2014-08-30T22:35:24+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/html/</loc>
+    <loc>https://anderspitman.net/categories/html/</loc>
     <lastmod>2018-04-04T21:21:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/html5/</loc>
+    <loc>https://anderspitman.net/categories/html5/</loc>
     <lastmod>2018-04-04T21:21:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/ipython/</loc>
+    <loc>https://anderspitman.net/categories/ipython/</loc>
     <lastmod>2014-06-15T22:40:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/javascript/</loc>
+    <loc>https://anderspitman.net/categories/javascript/</loc>
     <lastmod>2018-04-04T21:21:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/post/</loc>
-    <lastmod>2018-04-04T21:21:00+00:00</lastmod>
+    <loc>https://anderspitman.net/post/</loc>
+    <lastmod>2018-06-19T12:14:12-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/pyside/</loc>
+    <loc>https://anderspitman.net/categories/pyside/</loc>
     <lastmod>2014-06-15T22:40:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/python/</loc>
+    <loc>https://anderspitman.net/categories/python/</loc>
     <lastmod>2014-07-21T10:41:56+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/quickstart/</loc>
+    <loc>https://anderspitman.net/categories/quickstart/</loc>
     <lastmod>2014-07-21T10:41:56+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/react/</loc>
+    <loc>https://anderspitman.net/categories/react/</loc>
     <lastmod>2018-04-04T21:21:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/rust/</loc>
+    <loc>https://anderspitman.net/categories/rust/</loc>
     <lastmod>2018-04-04T21:21:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/tags/</loc>
+    <loc>https://anderspitman.net/tags/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/tutorial/</loc>
+    <loc>https://anderspitman.net/categories/tutorial/</loc>
     <lastmod>2018-04-04T21:21:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/webpack/</loc>
+    <loc>https://anderspitman.net/categories/webpack/</loc>
     <lastmod>2018-04-04T21:21:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://anderspitman.github.io/categories/zeromq/</loc>
+    <loc>https://anderspitman.net/categories/zeromq/</loc>
     <lastmod>2014-06-15T22:40:00+00:00</lastmod>
     <priority>0</priority>
   </url>

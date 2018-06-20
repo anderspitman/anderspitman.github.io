@@ -2,23 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Babel on Anders Pitman&#39;s blog</title>
-    <link>https://anderspitman.github.io/categories/babel/</link>
+    <link>https://anderspitman.net/categories/babel/</link>
     <description>Recent content in Babel on Anders Pitman&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 04 Apr 2018 21:21:00 +0000</lastBuildDate>
     
-	<atom:link href="https://anderspitman.github.io/categories/babel/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://anderspitman.net/categories/babel/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Making a 100% Statically-Linked Single-File Web App with React and Rust</title>
-      <link>https://anderspitman.github.io/2018/04/04/static-react-rust-webapp/</link>
+      <title>Making a 100% Statically-Linked, Single-File Web App with React and Rust</title>
+      <link>https://anderspitman.net/2018/04/04/static-react-rust-webapp/</link>
       <pubDate>Wed, 04 Apr 2018 21:21:00 +0000</pubDate>
       
-      <guid>https://anderspitman.github.io/2018/04/04/static-react-rust-webapp/</guid>
-      <description>This tutorial will cover the basics of creating a minimal React app which can be deployed as a statically-linked Rust binary.
-Why?  Simpler deployment. Having a static binary means you just have to copy the file to your servers and run it. Cross platform GUI apps. One of the biggest challenges in creating cross-platform GUI app is working with a GUI library that targets all the platforms you&amp;rsquo;re interested in.</description>
+      <guid>https://anderspitman.net/2018/04/04/static-react-rust-webapp/</guid>
+      <description>This tutorial will cover the basics of creating a minimal React app which can be deployed as a statically-linked Rust binary. What this accomplishes is having all of your code, including HTML, JavaScript, CSS, and Rust, packaged into a single file that will run on pretty much any 64-bit Linux system, regardless of the kernel version or installed libraries.
+Complete source is available on GitHub.
+Why?  Simpler deployment: Having a static binary means you just have to copy the file to your servers and run it.</description>
     </item>
     
   </channel>

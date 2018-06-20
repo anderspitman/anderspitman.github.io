@@ -7,26 +7,26 @@
         <meta name="author">
         <meta name="description" content="Personal Blog">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="generator" content="Hugo 0.38" />
-        <link href="https://anderspitman.github.io/post/index.xml" rel="alternate" type="application/rss+xml" title="Anders Pitman&#39;s blog" />
-        <link href="https://anderspitman.github.io/post/index.xml" rel="feed" type="application/rss+xml" title="Anders Pitman&#39;s blog" />
+        <meta name="generator" content="Hugo 0.42.1" />
+        <link href="https://anderspitman.net/post/index.xml" rel="alternate" type="application/rss+xml" title="Anders Pitman&#39;s blog" />
+        <link href="https://anderspitman.net/post/index.xml" rel="feed" type="application/rss+xml" title="Anders Pitman&#39;s blog" />
         <link href='//fonts.googleapis.com/css?family=Roboto:400,300,700|Noto+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://anderspitman.github.io/css/styles.css">
-        <link rel="icon" href="https://anderspitman.github.io/favicon.ico">
-        <link rel="apple-touch-icon" href="https://anderspitman.github.io/apple-touch-icon.png" />
-        <link rel="stylesheet" href="https://anderspitman.github.io/css/highlightjs/monokai.css">
-        <script src="https://anderspitman.github.io/js/vendor/modernizr-2.8.0.min.js"></script>
+        <link rel="stylesheet" href="https://anderspitman.net/css/styles.css">
+        <link rel="icon" href="https://anderspitman.net/favicon.ico">
+        <link rel="apple-touch-icon" href="https://anderspitman.net/apple-touch-icon.png" />
+        <link rel="stylesheet" href="https://anderspitman.net/css/highlightjs/monokai.css">
+        <script src="https://anderspitman.net/js/vendor/modernizr-2.8.0.min.js"></script>
         
         <style>
         .site-header h2 .logo {
-        background: url(https://anderspitman.github.io/img/libros_libres.jpg) no-repeat 0 0;
+        background: url(https://anderspitman.net/img/libros_libres.jpg) no-repeat 0 0;
         }
         @media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
           .site-header h2 .logo {
-            background-image: url(https://anderspitman.github.io/img/libros_libres.jpg);
+            background-image: url(https://anderspitman.net/img/libros_libres.jpg);
         }}
        .site-header {
-         background: #2a373d url(https://anderspitman.github.io/img/libros_libres.jpg) no-repeat center center;
+         background: #2a373d url(https://anderspitman.net/img/libros_libres.jpg) no-repeat center center;
          z-index: -1;
         }
         </style>
@@ -43,9 +43,9 @@
 <div class="container clearfix">
     <main role="main" class="content">
         <article class="post">
-            <a class="btn home" href="https://anderspitman.github.io" title="">&laquo; </a>
+            <a class="btn home" href="https://anderspitman.net/" title="">&laquo; </a>
             
-<h1><a href="https://anderspitman.github.io/2018/04/04/static-react-rust-webapp/" title="Making a 100% Statically-Linked Single-File Web App with React and Rust">Making a 100% Statically-Linked Single-File Web App with React and Rust</a></h1>
+<h1><a href="https://anderspitman.net/2018/04/04/static-react-rust-webapp/" title="Making a 100% Statically-Linked, Single-File Web App with React and Rust">Making a 100% Statically-Linked, Single-File Web App with React and Rust</a></h1>
 
 <footer class="post-info"> <span class="post-meta"><time datetime="2018.04.04">2018.04.04</time>
 
@@ -55,20 +55,27 @@
             
 
 <p>This tutorial will cover the basics of creating a minimal React app which can
-be deployed as a statically-linked Rust binary.</p>
+be deployed as a statically-linked Rust binary. What this accomplishes is
+having all of your code, including HTML, JavaScript, CSS, and Rust, packaged
+into a single file that will run on pretty much any 64-bit Linux system,
+regardless of the kernel version or installed libraries.</p>
+
+<p>Complete source is available on <a href="https://github.com/anderspitman/react_rust_webapp">GitHub</a>.</p>
 
 <h1 id="why">Why?</h1>
 
 <ul>
-<li>Simpler deployment. Having a static binary means you just have to copy the
+<li><strong>Simpler deployment:</strong> Having a static binary means you just have to copy the
 file to your servers and run it.</li>
-<li>Cross platform GUI apps. One of the biggest challenges in creating
-cross-platform GUI app is working with a GUI library that targets all the
+<li><strong>Cross-platform native GUI apps:</strong> One of the biggest challenges in creating
+a cross-platform GUI app is working with a GUI library that targets all the
 platforms you&rsquo;re interested in. The approach here lets you leverage the
 user&rsquo;s browser for this purpose. This is somewhat similar to what
 <a href="https://electronjs.org/">Electron</a> accomplishes, but your backend is in
 Rust rather than JavaScript, and the user navigates to the app from their
-browser.</li>
+browser. There are certainly tradeoffs here, but it can work well for some
+apps. I was first introduced to this approach by <a href="https://syncthing.net/">syncthing</a>,
+which is written in go but does a similar thing.</li>
 <li>Because I&rsquo;ve been obsessed with static linking for as long as I can
 remember and I&rsquo;m not really sure why.</li>
 </ul>
@@ -118,7 +125,7 @@ touch src/index.js
   &lt;/head&gt;
   &lt;body&gt;
     &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;
-    &lt;script src=&quot;/main.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;/bundle.js&quot;&gt;&lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
@@ -235,9 +242,7 @@ available as a normal variable.</p>
 
 <p>The rouille code just sets up two HTTP endpoints, &ldquo;/&rdquo; and &ldquo;/bundle.js&rdquo;.
 Instead of returning the files from the filesystem as we&rsquo;d typically do with
-a web app, we&rsquo;re returning the contents of the statics strings from the binary.
-I was first introduced to this pattern by <a href="https://syncthing.net/">syncthing</a>,
-which is written in go but does a similar thing.</p>
+a web app, we&rsquo;re returning the contents of the statics strings from the binary.</p>
 
 <p>To learn more about using Rouille to do more advanced stuff refer to their
 docs.</p>
@@ -290,21 +295,24 @@ on your system and ensure the musl-gcc command is on your PATH.</p>
 <li>Take the port number from the command line</li>
 <li>Serialized (probably JSON) requests and responses</li>
 <li>Run webpack as an npm script command</li>
+<li>Target other OSes. I haven&rsquo;t tried yet, but this should be mostly transferable
+to MacOS and Windows, thanks to the awesomeness that is Rust/Cargo and the
+universal availability of web browsers.</li>
 </ul>
 
             <ul class="share-buttons">
     <li></li>
     <li>
-        <a class="icon-facebook-squared" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fanderspitman.github.io%2f2018%2f04%2f04%2fstatic-react-rust-webapp%2f" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title=""></a>
+        <a class="icon-facebook-squared" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fanderspitman.net%2f2018%2f04%2f04%2fstatic-react-rust-webapp%2f" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title=""></a>
     </li>
     <li>
-        <a class="icon-twitter" href="https://twitter.com/share?text=Making%20a%20100%25%20Statically-Linked%20Single-File%20Web%20App%20with%20React%20and%20Rust&amp;url=https%3a%2f%2fanderspitman.github.io%2f2018%2f04%2f04%2fstatic-react-rust-webapp%2f" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title=""></a>
+        <a class="icon-twitter" href="https://twitter.com/share?text=Making%20a%20100%25%20Statically-Linked%2c%20Single-File%20Web%20App%20with%20React%20and%20Rust&amp;url=https%3a%2f%2fanderspitman.net%2f2018%2f04%2f04%2fstatic-react-rust-webapp%2f" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title=""></a>
     </li>
     <li>
-        <a class="icon-gplus" href="https://plus.google.com/share?url=https%3a%2f%2fanderspitman.github.io%2f2018%2f04%2f04%2fstatic-react-rust-webapp%2f" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title=""></a>
+        <a class="icon-gplus" href="https://plus.google.com/share?url=https%3a%2f%2fanderspitman.net%2f2018%2f04%2f04%2fstatic-react-rust-webapp%2f" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title=""></a>
     </li>
     <li>
-        <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fanderspitman.github.io%2f2018%2f04%2f04%2fstatic-react-rust-webapp%2f&title=Making%20a%20100%25%20Statically-Linked%20Single-File%20Web%20App%20with%20React%20and%20Rust" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=494');return false;" title=""></a>
+        <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fanderspitman.net%2f2018%2f04%2f04%2fstatic-react-rust-webapp%2f&title=Making%20a%20100%25%20Statically-Linked%2c%20Single-File%20Web%20App%20with%20React%20and%20Rust" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=494');return false;" title=""></a>
     </li>
 </ul>
 
@@ -312,7 +320,7 @@ on your system and ensure the musl-gcc command is on your PATH.</p>
         
     </main>
     <aside class="author">
-  <img class="profile-image" src="https://anderspitman.github.io/img/portrait.jpg" alt="Anders Pitman" />
+  <img class="profile-image" src="https://anderspitman.net/img/portrait.jpg" alt="Anders Pitman" />
   <p class="name"> 
   <strong>Anders Pitman</strong></p>
   <p class="address">USA, Arizona, Tempe</p>
@@ -340,7 +348,7 @@ on your system and ensure the musl-gcc command is on your PATH.</p>
 
 
 
-<li><a href="https://anderspitman.github.iopost/index.xml" class="icon-rss" target="_blank" title="RSS"></a></li>
+<li><a href="https://anderspitman.net/post/index.xml" class="icon-rss" target="_blank" title="RSS"></a></li>
 
   </ul>
   <br><br>
@@ -350,7 +358,7 @@ on your system and ensure the musl-gcc command is on your PATH.</p>
 
 <footer class="main-footer">
   <div class="container clearfix">
-        <a class="icon-rss" href="https://anderspitman.github.io/post/index.xml" title="RSS"></a>
+        <a class="icon-rss" href="https://anderspitman.net/post/index.xml" title="RSS"></a>
         <p>&copy; 2018 &middot; Powered by <a href="http://gohugo.io">Hugo</a>.</p>
   </div>
 </footer>
@@ -358,20 +366,23 @@ on your system and ensure the musl-gcc command is on your PATH.</p>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
-<script>window.jQuery || document.write('<script src="https:\/\/anderspitman.github.io\/js\/vendor\/jquery-1.11.0.min.js"><\/script>')</script>
-<script src="https://anderspitman.github.io/js/plugins.js"></script>
+<script>window.jQuery || document.write('<script src="https:\/\/anderspitman.net\/js\/vendor\/jquery-1.11.0.min.js"><\/script>')</script>
+<script src="https://anderspitman.net/js/plugins.js"></script>
 
 
 
 
 <script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-ga('create', 'UA-89445274-1', 'auto');
-ga('send', 'pageview');
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-89445274-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
 
 </body>

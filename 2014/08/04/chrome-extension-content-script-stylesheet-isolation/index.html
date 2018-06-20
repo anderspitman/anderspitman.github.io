@@ -7,26 +7,26 @@
         <meta name="author">
         <meta name="description" content="Personal Blog">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="generator" content="Hugo 0.38" />
-        <link href="https://anderspitman.github.io/post/index.xml" rel="alternate" type="application/rss+xml" title="Anders Pitman&#39;s blog" />
-        <link href="https://anderspitman.github.io/post/index.xml" rel="feed" type="application/rss+xml" title="Anders Pitman&#39;s blog" />
+        <meta name="generator" content="Hugo 0.42.1" />
+        <link href="https://anderspitman.net/post/index.xml" rel="alternate" type="application/rss+xml" title="Anders Pitman&#39;s blog" />
+        <link href="https://anderspitman.net/post/index.xml" rel="feed" type="application/rss+xml" title="Anders Pitman&#39;s blog" />
         <link href='//fonts.googleapis.com/css?family=Roboto:400,300,700|Noto+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="https://anderspitman.github.io/css/styles.css">
-        <link rel="icon" href="https://anderspitman.github.io/favicon.ico">
-        <link rel="apple-touch-icon" href="https://anderspitman.github.io/apple-touch-icon.png" />
-        <link rel="stylesheet" href="https://anderspitman.github.io/css/highlightjs/monokai.css">
-        <script src="https://anderspitman.github.io/js/vendor/modernizr-2.8.0.min.js"></script>
+        <link rel="stylesheet" href="https://anderspitman.net/css/styles.css">
+        <link rel="icon" href="https://anderspitman.net/favicon.ico">
+        <link rel="apple-touch-icon" href="https://anderspitman.net/apple-touch-icon.png" />
+        <link rel="stylesheet" href="https://anderspitman.net/css/highlightjs/monokai.css">
+        <script src="https://anderspitman.net/js/vendor/modernizr-2.8.0.min.js"></script>
         
         <style>
         .site-header h2 .logo {
-        background: url(https://anderspitman.github.io/img/libros_libres.jpg) no-repeat 0 0;
+        background: url(https://anderspitman.net/img/libros_libres.jpg) no-repeat 0 0;
         }
         @media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
           .site-header h2 .logo {
-            background-image: url(https://anderspitman.github.io/img/libros_libres.jpg);
+            background-image: url(https://anderspitman.net/img/libros_libres.jpg);
         }}
        .site-header {
-         background: #2a373d url(https://anderspitman.github.io/img/libros_libres.jpg) no-repeat center center;
+         background: #2a373d url(https://anderspitman.net/img/libros_libres.jpg) no-repeat center center;
          z-index: -1;
         }
         </style>
@@ -43,9 +43,9 @@
 <div class="container clearfix">
     <main role="main" class="content">
         <article class="post">
-            <a class="btn home" href="https://anderspitman.github.io" title="">&laquo; </a>
+            <a class="btn home" href="https://anderspitman.net/" title="">&laquo; </a>
             
-<h1><a href="https://anderspitman.github.io/2014/08/04/chrome-extension-content-script-stylesheet-isolation/" title="Chrome Extension Content Script Stylesheet Isolation">Chrome Extension Content Script Stylesheet Isolation</a></h1>
+<h1><a href="https://anderspitman.net/2014/08/04/chrome-extension-content-script-stylesheet-isolation/" title="Chrome Extension Content Script Stylesheet Isolation">Chrome Extension Content Script Stylesheet Isolation</a></h1>
 
 <footer class="post-info"> <span class="post-meta"><time datetime="2014.08.04">2014.08.04</time>
 
@@ -132,26 +132,24 @@ it.</p>
 <p>The manifest references several files that we will need to create. Let&rsquo;s start
 with content.js:</p>
 
-<p>```javascript content.js
-var iframe = document.createElement(&lsquo;iframe&rsquo;);
-iframe.src = chrome.extension.getURL(&ldquo;popup.html&rdquo;);
-iframe.className = &lsquo;css-isolation-popup&rsquo;;
+<pre><code class="language-javascript">var iframe = document.createElement('iframe');
+iframe.src = chrome.extension.getURL(&quot;popup.html&quot;);
+iframe.className = 'css-isolation-popup';
 iframe.frameBorder = 0;
-document.body.appendChild(iframe);</p>
+document.body.appendChild(iframe);
 
-<p>chrome.runtime.onMessage.addListener(function(message) {
-  iframe.style.display = &lsquo;none&rsquo;;
-});</p>
+chrome.runtime.onMessage.addListener(function(message) {
+  iframe.style.display = 'none';
+});
+</code></pre>
 
-<pre><code>
-Here we're creating the iframe that will hold our popup. Try to make sure the
-`className` is something unique because this is the one style that may
-still interfere with the page the user visits. I'm using `css-isolation-popup`.
-That style comes from content.css, which is referenced in the manifest. Let's
-add it real quick:
+<p>Here we&rsquo;re creating the iframe that will hold our popup. Try to make sure the
+<code>className</code> is something unique because this is the one style that may
+still interfere with the page the user visits. I&rsquo;m using <code>css-isolation-popup</code>.
+That style comes from content.css, which is referenced in the manifest. Let&rsquo;s
+add it real quick:</p>
 
-```css content.css
-.css-isolation-popup {
+<pre><code class="language-css">.css-isolation-popup {
   position: fixed;
   top: 0px;
   left: 0px;
@@ -182,12 +180,11 @@ I think this will be much more clear once we finish our example.</p>
 
 <p>Now let&rsquo;s add the actual popup files, popup.html and popup.js:</p>
 
-<p>```html popup.html
-&lt;!doctype html&gt;
-<html></p>
+<pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html&gt;
 
-<p><head>
-<style>
+&lt;head&gt;
+&lt;style&gt;
 .overlay {
   position: fixed;
   top: 0%;
@@ -210,31 +207,30 @@ I think this will be much more clear once we finish our example.</p>
   background-color:#FFFFFF;
   z-index: 1100;
 }
-</style>
-</head></p>
+&lt;/style&gt;
+&lt;/head&gt;
 
-<p><body>
-<div class='overlay'></div>
-<div class='wrapper'>
-  <h1>Click outside to hide</h1>
-</div>
-<script src='popup.js'></script>
-</body></p>
+&lt;body&gt;
+&lt;div class='overlay'&gt;&lt;/div&gt;
+&lt;div class='wrapper'&gt;
+  &lt;h1&gt;Click outside to hide&lt;/h1&gt;
+&lt;/div&gt;
+&lt;script src='popup.js'&gt;&lt;/script&gt;
+&lt;/body&gt;
 
-<p></html></p>
+&lt;/html&gt;
+</code></pre>
 
-<pre><code>
-Mostly just styling. The overlay is a shaded region which will fill the window
+<p>Mostly just styling. The overlay is a shaded region which will fill the window
 surrounding our small popup. The popup lives inside the wrapper. I want to stress the
 fact that everything in here is completely isolated from whatever page the user
 is visiting. We can name our classes whatever we want with no fear of
-name collisions from the outside world. Perfect!
+name collisions from the outside world. Perfect!</p>
 
-We're sourcing popup.js from within popup.html. There's no need to
-add it in the manifest.
+<p>We&rsquo;re sourcing popup.js from within popup.html. There&rsquo;s no need to
+add it in the manifest.</p>
 
-```javascript popup.js
-chrome.runtime.onMessage.addListener(function(message) {
+<pre><code class="language-javascript">chrome.runtime.onMessage.addListener(function(message) {
   if (message == 'hide_popup') {
     iframe.style.display = 'none';
   }
@@ -251,11 +247,10 @@ the background page and have it forward it to the content script.</p>
 
 <p>Add the background page as follows:</p>
 
-<p><code>javascript background.js
-chrome.runtime.onMessage.addListener(function(message, sender) {
+<pre><code class="language-javascript">chrome.runtime.onMessage.addListener(function(message, sender) {
   chrome.tabs.sendMessage(sender.tab.id, message);
 });
-</code></p>
+</code></pre>
 
 <p>Literally all it does is repeat whatever messages it receives back out to the
 tab it received it from. It&rsquo;s worth noting here that both content.js and
@@ -281,16 +276,16 @@ be fairly straightforward to augment with additional functionality.</p>
             <ul class="share-buttons">
     <li></li>
     <li>
-        <a class="icon-facebook-squared" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fanderspitman.github.io%2f2014%2f08%2f04%2fchrome-extension-content-script-stylesheet-isolation%2f" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title=""></a>
+        <a class="icon-facebook-squared" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fanderspitman.net%2f2014%2f08%2f04%2fchrome-extension-content-script-stylesheet-isolation%2f" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;" title=""></a>
     </li>
     <li>
-        <a class="icon-twitter" href="https://twitter.com/share?text=Chrome%20Extension%20Content%20Script%20Stylesheet%20Isolation&amp;url=https%3a%2f%2fanderspitman.github.io%2f2014%2f08%2f04%2fchrome-extension-content-script-stylesheet-isolation%2f" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title=""></a>
+        <a class="icon-twitter" href="https://twitter.com/share?text=Chrome%20Extension%20Content%20Script%20Stylesheet%20Isolation&amp;url=https%3a%2f%2fanderspitman.net%2f2014%2f08%2f04%2fchrome-extension-content-script-stylesheet-isolation%2f" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;" title=""></a>
     </li>
     <li>
-        <a class="icon-gplus" href="https://plus.google.com/share?url=https%3a%2f%2fanderspitman.github.io%2f2014%2f08%2f04%2fchrome-extension-content-script-stylesheet-isolation%2f" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title=""></a>
+        <a class="icon-gplus" href="https://plus.google.com/share?url=https%3a%2f%2fanderspitman.net%2f2014%2f08%2f04%2fchrome-extension-content-script-stylesheet-isolation%2f" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;" title=""></a>
     </li>
     <li>
-        <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fanderspitman.github.io%2f2014%2f08%2f04%2fchrome-extension-content-script-stylesheet-isolation%2f&title=Chrome%20Extension%20Content%20Script%20Stylesheet%20Isolation" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=494');return false;" title=""></a>
+        <a class="icon-linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3a%2f%2fanderspitman.net%2f2014%2f08%2f04%2fchrome-extension-content-script-stylesheet-isolation%2f&title=Chrome%20Extension%20Content%20Script%20Stylesheet%20Isolation" onclick="window.open(this.href, 'linkedin-share', 'width=600,height=494');return false;" title=""></a>
     </li>
 </ul>
 
@@ -298,7 +293,7 @@ be fairly straightforward to augment with additional functionality.</p>
         
     </main>
     <aside class="author">
-  <img class="profile-image" src="https://anderspitman.github.io/img/portrait.jpg" alt="Anders Pitman" />
+  <img class="profile-image" src="https://anderspitman.net/img/portrait.jpg" alt="Anders Pitman" />
   <p class="name"> 
   <strong>Anders Pitman</strong></p>
   <p class="address">USA, Arizona, Tempe</p>
@@ -326,7 +321,7 @@ be fairly straightforward to augment with additional functionality.</p>
 
 
 
-<li><a href="https://anderspitman.github.iopost/index.xml" class="icon-rss" target="_blank" title="RSS"></a></li>
+<li><a href="https://anderspitman.net/post/index.xml" class="icon-rss" target="_blank" title="RSS"></a></li>
 
   </ul>
   <br><br>
@@ -336,7 +331,7 @@ be fairly straightforward to augment with additional functionality.</p>
 
 <footer class="main-footer">
   <div class="container clearfix">
-        <a class="icon-rss" href="https://anderspitman.github.io/post/index.xml" title="RSS"></a>
+        <a class="icon-rss" href="https://anderspitman.net/post/index.xml" title="RSS"></a>
         <p>&copy; 2018 &middot; Powered by <a href="http://gohugo.io">Hugo</a>.</p>
   </div>
 </footer>
@@ -344,20 +339,23 @@ be fairly straightforward to augment with additional functionality.</p>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
-<script>window.jQuery || document.write('<script src="https:\/\/anderspitman.github.io\/js\/vendor\/jquery-1.11.0.min.js"><\/script>')</script>
-<script src="https://anderspitman.github.io/js/plugins.js"></script>
+<script>window.jQuery || document.write('<script src="https:\/\/anderspitman.net\/js\/vendor\/jquery-1.11.0.min.js"><\/script>')</script>
+<script src="https://anderspitman.net/js/plugins.js"></script>
 
 
 
 
 <script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-ga('create', 'UA-89445274-1', 'auto');
-ga('send', 'pageview');
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-89445274-1', 'auto');
+	
+	ga('send', 'pageview');
+}
 </script>
 
 </body>

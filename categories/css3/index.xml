@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Css3 on Anders Pitman&#39;s blog</title>
-    <link>https://anderspitman.github.io/categories/css3/</link>
+    <link>https://anderspitman.net/categories/css3/</link>
     <description>Recent content in Css3 on Anders Pitman&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 30 Aug 2014 22:35:24 +0000</lastBuildDate>
     
-	<atom:link href="https://anderspitman.github.io/categories/css3/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://anderspitman.net/categories/css3/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Chrome Extension PubSub</title>
-      <link>https://anderspitman.github.io/2014/08/30/chrome-extension-pubsub/</link>
+      <link>https://anderspitman.net/2014/08/30/chrome-extension-pubsub/</link>
       <pubDate>Sat, 30 Aug 2014 22:35:24 +0000</pubDate>
       
-      <guid>https://anderspitman.github.io/2014/08/30/chrome-extension-pubsub/</guid>
+      <guid>https://anderspitman.net/2014/08/30/chrome-extension-pubsub/</guid>
       <description>This tutorial builds the same Chrome extension popup as my Chrome Extension Content Script Stylesheet Isolation tutorial, but uses the chromeps pubsub module to make things easier. For more detailed information, I highly recommend looking through that tutorial.
 You can get all the code for this tutorial from https://github.com/anderspitman/chrome-extension-pubsub-example
 Background Info When writing chrome extensions with content scripts, you often find yourself doing a lot of message passing. If your content scripts include iframes, things get even more complicated because in order to communicate between the content scripts and their iframes, you have to ferry the messages back and forth using the background page.</description>
@@ -24,10 +24,10 @@ Background Info When writing chrome extensions with content scripts, you often f
     
     <item>
       <title>Chrome Extension Content Script Stylesheet Isolation</title>
-      <link>https://anderspitman.github.io/2014/08/04/chrome-extension-content-script-stylesheet-isolation/</link>
+      <link>https://anderspitman.net/2014/08/04/chrome-extension-content-script-stylesheet-isolation/</link>
       <pubDate>Mon, 04 Aug 2014 08:52:47 +0000</pubDate>
       
-      <guid>https://anderspitman.github.io/2014/08/04/chrome-extension-content-script-stylesheet-isolation/</guid>
+      <guid>https://anderspitman.net/2014/08/04/chrome-extension-content-script-stylesheet-isolation/</guid>
       <description>UPDATE 2014-08-30: For a way to handle message passing using the chromeps pubsub module, see this post.
 Background Info When writing Chrome extensions, if you want to inject HTML and CSS into pages the user is visiting, you use what&amp;rsquo;s called a content script. One reason you might want to do this would be to build a custom popup that activates on certain pages.
 One of the biggest problems people run in to is CSS corruption.</description>
